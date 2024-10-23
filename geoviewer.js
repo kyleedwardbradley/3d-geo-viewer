@@ -370,7 +370,7 @@ client.init(uid, {
   error: error,
   autostart: 1,
   preload: 1,
-  autospin: autoSpin,
+  autospin: 0,
   transparent: 1
 });
 
