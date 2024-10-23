@@ -3,11 +3,6 @@
 var version = "1.12.1";
 
 var urlParams = new URLSearchParams(window.location.search);
-var autoSpin = 0.0;
-
-if (urlParams.has("autospin")) {
-  autoSpin = urlParams.get("autospin");
-}
 
 if (urlParams.has("id")) {
   uid = urlParams.get("id");
