@@ -40,6 +40,9 @@ var officialNodes = [];
 // annotation list
 var annotationlist;
 
+// list of the hide/show buttons
+var buttonlist=[];
+
 var lastspan;
 
 // A list of the spans containing material names + buttons
@@ -50,9 +53,10 @@ var jsonarray;
 function initGui() {
   var controls = document.getElementById("navTree");
   var buttonsText = '<ul id="topul"><li> <span className="lcaret">';
-  buttonsText += '<input type="button" class="styled" id="screenshot" value="Screenshot"></button>';
-  buttonsText += '<input type="button" class="styled" id="annotations" value="Annotations"></button>';
-  buttonsText += '<input type="button" class="styled" id="wireframes" value="Wireframe"></button>';
+  buttonsText += '<input type="button" class="styled" id="screenshot" value="Save"></button>';
+  buttonsText += '<input type="button" class="styled" id="annotations" value="Annot"></button>';
+  buttonsText += '<input type="button" class="styled" id="wireframes" value="Wire"></button>';
+  buttonsText += '<input type="button" class="styled" id="resetbutton" value="Zoom"></button>';
   buttonsText += "</span></li></ul>"
   controls.innerHTML = buttonsText;
 }
@@ -163,14 +167,13 @@ var success = function (api) {
             sp.id = 'span_' + name; 
 
             var textNode = document.createTextNode(text);
+            // Add the material name text to the span
+            sp.appendChild(textNode);
 
             var bspan = document.createElement("span");
             bspan.id = 'bspan_' + name;
             bspan.className = "caret"
         
-            // Add the material name text to the span
-            sp.appendChild(textNode);
-
             // append the question mark button span to the line
             sp.appendChild(bspan);
 
@@ -247,7 +250,12 @@ var success = function (api) {
             });
 
             // Create a hide/show button 
-            thischild=li.appendChild(createButton(name));
+            var thisbutton = createButton(name)
+            thischild=li.appendChild(thisbutton);
+            // Add it to the list
+            buttonlist.push(thischild)
+            
+
             // Activate it to change the material element stored in the button definition
             thischild.addEventListener("click", function () {
               var thisname=this.getAttribute("nametext")
@@ -259,7 +267,7 @@ var success = function (api) {
                 this.setAttribute("state", "on")
 
                 // This might be deprecated
-                this.setAttribute("storedvalue", materialToUpdate.channels.Opacity.factor);
+                // this.setAttribute("storedvalue", materialToUpdate.channels.Opacity.factor);
 
                 // Iterate over nodes and turn off any with the correct material id for the present name
                 for (var instanceID in myNodeObjects) {
@@ -283,6 +291,46 @@ var success = function (api) {
               }
             });
         
+            // Create a zoom to me button
+            thischild=li.appendChild(createZoomButton(name));
+            thischild.addEventListener("click", function () {
+              var this_state;
+              var this_id;
+              var this_text = this.getAttribute("nametext");
+              var turnoff = [];
+
+              // Loop through all materials, recording which ones are turned on
+              for (var this_button in buttonlist) {
+                this_id = buttonlist[this_button].getAttribute("nametext");
+                // read the state of the button: "Off" actually means the material is On
+                this_state = buttonlist[this_button].getAttribute("state");
+                if (this_id != this_text) {
+                  if (this_state == "off") {
+                    turnoff.push(this_id);                    
+                    for (var instanceID in myNodeObjects) {
+                      if (myNodeObjects[instanceID].materialID == myMaterialID[this_id]) {
+                        api.hide(instanceID)
+                      }
+                    }
+
+                  }
+                } 
+              }
+
+              // Zoom
+              api.focusOnVisibleGeometries();
+
+              // Turn back on 
+              for (var this_id in turnoff) {
+                for (var instanceID in myNodeObjects) {
+                  if (myNodeObjects[instanceID].materialID == myMaterialID[turnoff[this_id]]) {
+                    api.show(instanceID)
+                  }
+                }
+              }
+            });
+
+
             li.appendChild(sp);
 
             thischild=li.appendChild(createSlider(name));
@@ -360,7 +408,15 @@ var success = function (api) {
           this.setAttribute("state", "on");
           this.style.backgroundColor = "red"
         }
-      });      
+      });   
+      
+      // Reset camera to presently visible geometries
+      document.getElementById('resetbutton').addEventListener('click', function () {
+        api.focusOnVisibleGeometries(function (err) {
+          if (err) return;
+        });
+      });
+
     });
   });
 };
@@ -381,12 +437,26 @@ function createButton(name) {
   btn.type = "button";
 
   btn.setAttribute("state", "off")
-  btn.setAttribute("storedvalue", 100)
+  // btn.setAttribute("storedvalue", 100)
   btn.id = 'button_' + name;
   btn.style.backgroundColor = "green";
   btn.style.width = "40px";
   btn.style.height = "40px";
   btn.innerHTML = 'On'
+  btn.setAttribute("nametext", name)
+
+  return btn;
+}
+
+function createZoomButton(name) {
+  var btn = document.createElement("button");
+  btn.type = "button";
+
+  btn.id = 'zoom_' + name;
+  btn.style.backgroundColor = "lightblue";
+  btn.style.width = "40px";
+  btn.style.height = "40px";
+  btn.innerHTML = 'T'
   btn.setAttribute("nametext", name)
 
   return btn;

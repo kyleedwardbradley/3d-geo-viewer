@@ -294,7 +294,7 @@ input.cmn-toggle-round:checked + label:after {
 }
 
 input {
-  width: 30%; /* try using some desirable value which is high enough for a 2-digit number */
+  width: 20%; /* try using some desirable value which is high enough for a 2-digit number */
   display: flex; /* to respect the specified width */
   flex-direction:row;
   float: right;
