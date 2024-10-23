@@ -1,0 +1,155 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+    <link rel="manifest" href="/site.webmanifest">
+    <title>3D Geological Model Viewer</title>
+
+    <style type="text/css" media="screen">
+
+        body,
+        html {
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+        }
+
+        * {
+            padding: 0;
+            margin: 0;
+        }
+
+        iframe {
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            border: none;
+        }
+
+        top-button input {
+            width: 100px;
+            height: 100px;
+            float: left;
+        }
+
+        top-button img {
+            width: 100px;
+            height: 100px;
+        }
+
+        .scrolling-wrapper {
+            overflow-x: scroll;
+            overflow-y: hidden;
+            white-space: nowrap;
+            background: black;
+
+            .card {
+                display: inline-block;
+            }
+        }
+
+        .scrolling-wrapper-flexbox {
+            display: flex;
+            flex-wrap: nowrap;
+            overflow-x: auto;
+            
+            .card {
+                flex: 0 0 auto;
+                margin-right: 3px;
+            }
+        }
+
+        .card {
+            border: 2px;
+            width: 200px;
+            height: 112px;
+            background: black;
+        }
+
+        .scrolling-wrapper, .scrolling-wrapper-flexbox {
+            height: 112px;
+            /* margin-bottom: 20px; */
+            width: 100%;
+            -webkit-overflow-scrolling: touch;
+            &::-webkit-scrollbar {
+                display: none;
+            }
+        }
+
+    </style>
+</head>
+<body>
+    <!-- A div to contain dynamically added model screenshots that load in the lower iframe when clicked -->
+    <div class="scrolling-wrapper" id="navDiv"></div>
+
+    <script>
+        var navDiv = document.getElementById("navDiv");
+        var upperul = document.createElement("ul");
+        upperul.id="topUl";
+        var li = document.createElement("li");
+
+        // A list of Sketchfab UIDs of models to be placed in the upper screenshot row
+        var uidlist=get_uids("./uid_list.json");        
+       
+        upperul.appendChild(li);
+        navDiv.appendChild(upperul);
+
+        function createButton(uid) {
+            var thumbnail_url;
+            var btn=document.createElement("input");
+
+            fetch('https://sketchfab.com/oembed?url=https://sketchfab.com/models/' + uid, {cache: "no-store"})
+            .then(response => response.json())
+            .then(data => {
+                // If this UID provides a response, parse it to add the control tile and pass the UID to the viewer HTML
+                if (data.html) {
+                    // document.getElementById('btn1').style="background: url( " + data.thumbnail_url + " )";
+                    thumbnail_url = data.thumbnail_url
+                    btn.type = "button";
+                    // btn.className = "top-button"
+                    btn.id = uid;
+                    btn.title = data.title + ' by ' + data.author_name;
+                    btn.style.width = "200px";
+                    btn.style.height = "112px";
+                    btn.style.background = "url(" + thumbnail_url + ")";
+                    btn.style.backgroundSize = "200px auto";
+                    btn.onclick = function() {
+                        var start = new Date().getTime();
+                        document.getElementById('iframeid').src = 'viewer.html?uid=' + uid;
+                    }
+                    return btn;
+                } else {
+                    return null;
+                }
+            })
+            .catch(error => console.error('Error:', error));
+            return btn;
+        }
+
+        async function get_uids(path) {
+
+          fetch(path, {cache: "no-store"})
+            .then(response => response.json())
+            .then(data => {
+              if (data) {
+                console.log(data.uids);
+                for (var this_uid in data.uids) {
+                  var newbutton=createButton(data.uids[this_uid])
+                  if (newbutton != null) {
+                      li.appendChild(newbutton);
+                  }
+                }
+              }
+            });
+        }
+
+    </script>
+    <iframe id="iframeid" src="viewer.html?uid=9c38a08933154e128bb550246285f9e4" width=100% height=100% scrolling="no" frameborder="0" style="border:0"></iframe>
+</body>
+</html>
+
+
