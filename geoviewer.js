@@ -47,6 +47,9 @@ var annotationlist;
 
 var lastspan;
 
+// A list of the spans containing material names + buttons
+var spanlist = [];
+
 var jsonarray;
 
 function initGui() {
@@ -64,16 +67,7 @@ initGui();
 var success = function (api) {
   api.start(function () {
 
-    // Set highlight options, but the color seems to stay red...
-
-    api.setHighlightOptions({
-      outlineWidth: 10,
-      outlineColor: [0, 0, 1.0],
-      outlineDuration: 2,
-      highlightColor: [0.0, 0.0, 1.0],
-      highlightDuration: 1
-    });
-
+ 
     // Clicking on an object in the viewer will scroll and select the material
     // in the navTree
 
@@ -188,11 +182,73 @@ var success = function (api) {
             // If we click on the name of a material, briefly highlight objects with
             // that material. 
             sp.setAttribute("mymat", name);
+            sp.setAttribute("highlighted", "off");
+
+            spanlist.push(sp);
+
             sp.addEventListener("click", function () {
-              var thisname=this.getAttribute("mymat")
+              var lspan;
+              var thisname=this.getAttribute("mymat");
+              var ishigh=this.getAttribute("highlighted");
+            
               var mymat=myMaterialsByNameFromMap[thisname];
+
+              // De-highlight all materials
+              api.setHighlightOptions({
+                outlineWidth: 0,
+                outlineColor: [0, 0, 0],
+                outlineDuration: 0,
+                highlightColor: [0.0, 0.0, 0],
+                highlightDuration: 0
+              });
+
+              // Turn off highlighting for all of the other spans
+              for (var instanceID in spanlist) {
+                var mat = spanlist[instanceID].mat;
+                if (mat != mymat) {
+                  api.highlightMaterial(mat);
+                  spanlist[instanceID].setAttribute("highlighted", "off");
+                  spanlist[instanceID].style.removeProperty("background"); 
+                }            
+              }
+
               console.log(mymat)
-              api.highlightMaterial(mymat);
+              if (ishigh=="on") {
+                   // Set highlight options
+
+                api.setHighlightOptions({
+                  outlineWidth: 0,
+                  outlineColor: [0, 0, 0],
+                  outlineDuration: 0,
+                  highlightColor: [0.0, 0.0, 0],
+                  highlightDuration: 0
+                });
+
+                api.highlightMaterial(mymat);
+                this.setAttribute("highlighted", "off");
+                this.style.removeProperty("background"); 
+
+
+              } else {
+
+                   // Set highlight options
+
+                api.setHighlightOptions({
+                  outlineWidth: 10,
+                  outlineColor: [0, 1.0, 0],
+                  outlineDuration: 2000,
+                  highlightColor: [0.0, 0.0, 1.0],
+                  highlightDuration: 1000
+                });
+
+
+                api.highlightMaterial(mymat);
+                this.setAttribute("highlighted", "on");
+                this.style.backgroundColor = '#9dcaf14f';
+
+
+              }
+
             });
 
             // Create a hide/show button 
