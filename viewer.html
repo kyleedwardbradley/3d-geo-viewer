@@ -20,6 +20,7 @@
     }
     uid=getParamValue("uid")
     console.log("script foundFound uid" + uid)
+    thisdate=Date.now();
   </script>
   <div class="py-2 min-height-100vh" style="min-height:100vh; background-color:#272425!important; padding-top:0; padding-bottom:0;">
     <div class="container">
@@ -43,4 +44,5 @@
   <div><p>Kyle Bradley 2024</p></div>
 </body>
 
-<script src="geoviewer.js?v=12345"></script>  
+<!-- <script src="geoviewer.js?v=12345"></script>   -->
+<script>document.write("<script type='text/javascript' src='geoviewer.js?v=" + Date.now() + "'><\/script>");</script>
