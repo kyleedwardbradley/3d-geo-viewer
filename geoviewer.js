@@ -53,10 +53,10 @@ var jsonarray;
 function initGui() {
   var controls = document.getElementById("navTree");
   var buttonsText = '<ul id="topul"><li> <span className="lcaret">';
-  buttonsText += '<input type="button" class="styled" id="screenshot" value="Save"></button>';
+  buttonsText += '<input type="button" class="styled-fixed" id="screenshot" value="Save"></button>';
   buttonsText += '<input type="button" class="styled" id="annotations" value="Annot"></button>';
   buttonsText += '<input type="button" class="styled" id="wireframes" value="Wire"></button>';
-  buttonsText += '<input type="button" class="styled" id="resetbutton" value="Zoom"></button>';
+  buttonsText += '<input type="button" class="styled-fixed" id="resetbutton" value="Zoom"></button>';
   buttonsText += "</span></li></ul>"
   controls.innerHTML = buttonsText;
 }
@@ -66,7 +66,6 @@ initGui();
 var success = function (api) {
   api.start(function () {
 
- 
     // Clicking on an object in the viewer will scroll and select the material
     // in the navTree
 
@@ -160,6 +159,12 @@ var success = function (api) {
             // Create a row in navTree
             var li = document.createElement("li");
 
+            var bspan = document.createElement("span");
+            bspan.id = 'bspan_' + name;
+            // bspan.className = "caret"
+            bspan.style.removeProperty("background"); 
+
+            
             // Create a span to contain text and buttons
             var sp = document.createElement("span");
             lastspan=sp;
@@ -168,14 +173,13 @@ var success = function (api) {
 
             var textNode = document.createTextNode(text);
             // Add the material name text to the span
+            // append the question mark button span to the line
+
             sp.appendChild(textNode);
 
-            var bspan = document.createElement("span");
-            bspan.id = 'bspan_' + name;
-            bspan.className = "caret"
-        
-            // append the question mark button span to the line
-            sp.appendChild(bspan);
+ 
+
+  
 
             // If we click on the name of a material, briefly highlight objects with
             // that material. 
@@ -244,18 +248,16 @@ var success = function (api) {
                 this.setAttribute("highlighted", "on");
                 this.style.backgroundColor = '#9dcaf14f';
 
-
               }
 
             });
 
             // Create a hide/show button 
-            var thisbutton = createButton(name)
+            var thisbutton = createShowHideButton(name)
             thischild=li.appendChild(thisbutton);
             // Add it to the list
             buttonlist.push(thischild)
             
-
             // Activate it to change the material element stored in the button definition
             thischild.addEventListener("click", function () {
               var thisname=this.getAttribute("nametext")
@@ -333,6 +335,7 @@ var success = function (api) {
 
             li.appendChild(sp);
 
+            li.appendChild(bspan);
             thischild=li.appendChild(createSlider(name));
 
             thischild.addEventListener("input", function () {
@@ -417,6 +420,25 @@ var success = function (api) {
         });
       });
 
+      // Set up popups
+
+      window.addEventListener('click', ({ target }) => {
+
+        const popups = [...document.getElementsByClassName('popup')];
+
+        console.log('clock')
+        const popup = target.closest('.popup');
+        console.log(popup);
+        const clickedOnClosedPopup = popup && !popup.classList.contains('show');
+        
+        popups.forEach(p => p.classList.remove('show'));
+        
+        if (clickedOnClosedPopup) {
+          console.log('showing');
+          popup.classList.add('show');
+        }
+      });
+
     });
   });
 };
@@ -432,7 +454,7 @@ client.init(uid, {
 
 // Functions
 
-function createButton(name) {
+function createShowHideButton(name) {
   var btn = document.createElement("button");
   btn.type = "button";
 
@@ -497,8 +519,10 @@ async function getData(path) {
       console.log(name + '/' + tooltip)
       myspan=document.getElementById('bspan_' + name);
       // myspan.innerHTML='<a href="www.google.com" onclick="confirm('  + tooltip +');"?</a>';
-      myspan.innerHTML='<button onclick="alert(\'' + tooltip + '\');">?</button>';
+      // myspan.innerHTML='<button onclick="alert(\'' + tooltip + '\');">?</button>';
+      myspan.innerHTML='<span class="popup"><img src="./qmark.svg" width="20" height="20"><span class="popuptext">' + tooltip + '</span></span>';
       myspan.title=tooltip;
+      console.log(myspan.innerHTML);
     }
   } catch (error) {
     console.error(error.message);

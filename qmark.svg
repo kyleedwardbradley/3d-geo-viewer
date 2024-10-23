@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg version="1.1" viewBox="-106 -106 212 212"
+ xmlns="http://www.w3.org/2000/svg"
+ xmlns:xlink="http://www.w3.org/1999/xlink">
+ <title>Blue round icon with questionmark</title>
+ <defs>
+  <linearGradient id="lg" x1="1" y1="1" >
+   <stop offset="0" stop-color="#00f" stop-opacity="1" />
+   <stop offset="1" stop-color="#fff" stop-opacity="1" />
+  </linearGradient>
+
+  <linearGradient id="lgb" x1="1" y1="1" >
+   <stop offset="0" stop-color="#aaf" stop-opacity="1" />
+   <stop offset="1" stop-color="#00a" stop-opacity="1" />
+  </linearGradient>
+
+  <path id="c"
+    d="M 2058 700
+       C 2058 896 1982 1062 1830 1198
+       C 1680 1336 1498 1404 1284 1404
+       C 1068 1404 884 1336 732 1198
+       C 580 1062 504 896 504 700
+       C 504 508 580 342 732 206
+       C 884 70 1068 0 1284 0
+       C 1498 0 1680 70 1830 206
+       C 1982 342 2058 508 2058 700
+       C 2058 700 2058 700 2058 7z
+       M 2268 3426
+       C 2218 3598 2112 3724 1952 3806
+       C 1836 3864 1712 3894 1578 3894
+       C 1578 3894 420 3894 420 3894
+       C 140 3894 0 3778 0 3542
+       C 0 3476 14 3404 42 3328
+       C 42 3328 552 1902 552 1902
+       C 552 1902 1616 1902 1616 1902
+       C 1616 1902 1074 3426 1074 3426
+       C 1074 3426 2268 3426 2268 3426"/>
+ </defs>
+  <circle r="100" fill="url(#lg)" transform="rotate(90)"
+   stroke="url(#lgb)" stroke-width="6"/>
+  <circle r="80" fill="url(#lg)" transform="rotate(-90)"
+   stroke="none" />
+   <g transform="translate(-34,-58)">
+  <use xlink:href="#c" fill="#eaffff" stroke="none" transform="scale(0.03)"/>
+  </g>
+</svg>
