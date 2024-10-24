@@ -293,7 +293,7 @@ var success = function (api) {
               }
             });
         
-            // Create a zoom to me button
+            // Create a focus button
             thischild=li.appendChild(createZoomButton(name));
             thischild.addEventListener("click", function () {
               var this_state;
@@ -475,10 +475,13 @@ function createZoomButton(name) {
   btn.type = "button";
 
   btn.id = 'zoom_' + name;
-  btn.style.backgroundColor = "lightblue";
+  btn.style.background="url(./focus.svg)"
+  // btn.style.backgroundColor = "lightblue";
   btn.style.width = "40px";
   btn.style.height = "40px";
-  btn.innerHTML = 'T'
+  btn.style.padding = "14px";
+  btn.style.backgroundSize = "36px auto";
+  // btn.innerHTML = 'T'
   btn.setAttribute("nametext", name)
 
   return btn;

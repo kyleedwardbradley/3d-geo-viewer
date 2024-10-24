@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   id="svg3658"
+   viewBox="0 0 299.69366 300.10492"
+   version="1.0"
+   width="299.69366"
+   height="300.10492"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:dc="http://purl.org/dc/elements/1.1/">
+  <defs
+     id="defs1" />
+  <g
+     id="g4589"
+     transform="translate(-262.02538,-255.11946)"
+     style="stroke:#000000;stroke-width:10.63">
+    <path
+       id="path4557"
+       transform="matrix(1.2259,0,0,1.2472,94.265,-150.2)"
+       fill="#ffffff"
+       d="m 376,445.36 a 117,115 0 1 1 0,-0.13" />
+    <path
+       id="path4559"
+       transform="matrix(0.5,0,0,0.5,303.11,442.55)"
+       fill="#000080"
+       d="m 152,140.36 34.75,-55.545 26.61,-59.878 30.73,57.87 38.55,52.983 -65.48,-2.33 z"
+       style="fill:#00ffff" />
+    <path
+       id="path4561"
+       transform="matrix(0,-0.5,0.5,0,450.19,513.91)"
+       fill="#000080"
+       d="m 152,140.36 34.75,-55.545 26.61,-59.878 30.73,57.87 38.55,52.983 -65.48,-2.33 z"
+       style="fill:#00ffff" />
+    <path
+       id="path4563"
+       transform="matrix(0,-0.5,-0.5,0,370.25,513.91)"
+       fill="#000080"
+       d="m 152,140.36 34.75,-55.545 26.61,-59.878 30.73,57.87 38.55,52.983 -65.48,-2.33 z"
+       style="fill:#00ffff" />
+    <path
+       id="path4565"
+       transform="matrix(0.5,0,0,-0.5,303.11,362.17)"
+       fill="#000080"
+       d="m 152,140.36 34.75,-55.545 26.61,-59.878 30.73,57.87 38.55,52.983 -65.48,-2.33 z"
+       style="fill:#00ffff" />
+  </g>
+  <metadata
+     id="metadata1">
+    <rdf:RDF>
+      <cc:Work>
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <cc:license
+           rdf:resource="http://creativecommons.org/licenses/publicdomain/" />
+        <dc:publisher>
+          <cc:Agent
+             rdf:about="http://openclipart.org/">
+            <dc:title>Openclipart</dc:title>
+          </cc:Agent>
+        </dc:publisher>
+        <dc:title>Focus Dot</dc:title>
+        <dc:date>2008-04-01T16:09:51</dc:date>
+        <dc:description>This is game design icon for pyweek#6</dc:description>
+        <dc:source>http://openclipart.org/detail/16084/focus-dot-by-milker-16084</dc:source>
+        <dc:creator>
+          <cc:Agent>
+            <dc:title>milker</dc:title>
+          </cc:Agent>
+        </dc:creator>
+        <dc:subject>
+          <rdf:Bag>
+            <rdf:li>clip art</rdf:li>
+            <rdf:li>clipart</rdf:li>
+            <rdf:li>game</rdf:li>
+            <rdf:li>icon</rdf:li>
+            <rdf:li>image</rdf:li>
+            <rdf:li>media</rdf:li>
+            <rdf:li>png</rdf:li>
+            <rdf:li>public domain</rdf:li>
+            <rdf:li>svg</rdf:li>
+          </rdf:Bag>
+        </dc:subject>
+      </cc:Work>
+      <cc:License
+         rdf:about="http://creativecommons.org/licenses/publicdomain/">
+        <cc:permits
+           rdf:resource="http://creativecommons.org/ns#Reproduction" />
+        <cc:permits
+           rdf:resource="http://creativecommons.org/ns#Distribution" />
+        <cc:permits
+           rdf:resource="http://creativecommons.org/ns#DerivativeWorks" />
+      </cc:License>
+    </rdf:RDF>
+  </metadata>
+</svg>
