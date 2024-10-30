@@ -63,7 +63,7 @@ function initGui() {
   buttonsText += '<input type="button" class="styled" id="annotations" value="Annot"></button>';
   buttonsText += '<input type="button" class="styled" id="wireframes" value="Wire"></button>';
   buttonsText += '<input type="button" class="styled-fixed" id="resetbutton" value="Zoom"></button>';
-  buttonsText += '<input type="button" class="styled-fixed" id="script" value="Script"></button>';
+  // buttonsText += '<input type="button" class="styled-fixed" id="script" value="Script"></button>';
   buttonsText += "</span></li></ul>"
   controls.innerHTML = buttonsText;
 }
