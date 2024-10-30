@@ -22,22 +22,28 @@
     uid=getParamValue("uid")
     console.log("script foundFound uid" + uid)
     thisdate=Date.now();
+
+    
   </script>
   <div class="py-2 min-height-100vh" style="min-height:100vh; background-color:#272425!important; padding-top:0; padding-bottom:0;">
     <div class="container">
       <!-- A row of two divisions, one for the 3D viewer, one for controls -->
       <div class="row">
         <div class="d-flex flex-column col-md-8 mb-3">
-          <iframe id="api-frame" width="100%" height="auto" allowfullscreen="" mozallowfullscreen="true" webkitallowfullscreen="true" class="mb-3 rounded shadow-lg embed-responsive embed-responsive-4by3 border border-info" loading="lazy"></iframe>
+          <iframe id="api-frame" width="100%" height="86.5%" allowfullscreen="" mozallowfullscreen="true" webkitallowfullscreen="true" class="mb-3 rounded shadow-lg embed-responsive embed-responsive-4by3 border border-info" loading="lazy"></iframe>
         </div>
-        <div class="d-flex flex-column col-md-4 mx-auto">
+        <div class="d-flex flex-column col-md-4 mb-3 overflow-y" style="height:86.5%">
           <!-- navTree is where controls will be placed by the script -->
+          <div class="navTreeTop" id="navTreeTop">
+          </div>
+
           <div class="navTree" id="navTree">
             <!-- <div class="switch">
               <input id="cmn-toggle-1" class="cmn-toggle cmn-toggle-round"  type="checkbox">
               <label for="cmn-toggle-1"></label>
             </div> -->
           </div>
+
         </div>
       </div>
     </div>

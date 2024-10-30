@@ -8,6 +8,10 @@ if (urlParams.has("id")) {
   uid = urlParams.get("id");
 }
 
+// delay function
+const delay = ms => new Promise(res => setTimeout(res, ms));
+
+
 // search for a mapping from material name to object description; a json file with UID.json as name
 
 var iframe = document.getElementById("api-frame");
@@ -50,13 +54,16 @@ var spanlist = [];
 
 var jsonarray;
 
+var camera_data = "";
+
 function initGui() {
-  var controls = document.getElementById("navTree");
+  var controls = document.getElementById("navTreeTop");
   var buttonsText = '<ul id="topul"><li> <span className="lcaret">';
   buttonsText += '<input type="button" class="styled-fixed" id="screenshot" value="Save"></button>';
   buttonsText += '<input type="button" class="styled" id="annotations" value="Annot"></button>';
   buttonsText += '<input type="button" class="styled" id="wireframes" value="Wire"></button>';
   buttonsText += '<input type="button" class="styled-fixed" id="resetbutton" value="Zoom"></button>';
+  buttonsText += '<input type="button" class="styled-fixed" id="script" value="Script"></button>';
   buttonsText += "</span></li></ul>"
   controls.innerHTML = buttonsText;
 }
@@ -74,6 +81,7 @@ var success = function (api) {
         lastspan.style.removeProperty("background"); 
         thisspan=document.getElementById('span_' + myMaterialsNamesFromMapName[info.material.name]);
         thisspan.style.backgroundColor = '#9dcaf14f';
+
         lastspan=thisspan;
         navt=document.getElementById('navTree');
         navt.scrollTop = thisspan.offsetTop;
@@ -164,7 +172,6 @@ var success = function (api) {
             // bspan.className = "caret"
             bspan.style.removeProperty("background"); 
 
-            
             // Create a span to contain text and buttons
             var sp = document.createElement("span");
             lastspan=sp;
@@ -176,10 +183,6 @@ var success = function (api) {
             // append the question mark button span to the line
 
             sp.appendChild(textNode);
-
- 
-
-  
 
             // If we click on the name of a material, briefly highlight objects with
             // that material. 
@@ -242,7 +245,6 @@ var success = function (api) {
                   highlightColor: [0.0, 0.0, 1.0],
                   highlightDuration: 1000
                 });
-
 
                 api.highlightMaterial(mymat);
                 this.setAttribute("highlighted", "on");
@@ -318,10 +320,8 @@ var success = function (api) {
                   }
                 } 
               }
-
-              // Zoom
+              // Zoom to the visible objects
               api.focusOnVisibleGeometries();
-
               // Turn back on 
               for (var this_id in turnoff) {
                 for (var instanceID in myNodeObjects) {
@@ -331,7 +331,6 @@ var success = function (api) {
                 }
               }
             });
-
 
             li.appendChild(sp);
 
@@ -349,10 +348,7 @@ var success = function (api) {
             // Append the line to the UL
             outerul.appendChild(li);
             ++i;
-
           }
-
-          // console.log(myMaterialID);
 
           // Append the UL to the navTree div in the HTML 
           var navTree = document.getElementById("navTree");
@@ -374,7 +370,7 @@ var success = function (api) {
         });
       });
 
-      // Set up button to turn on/off annotations
+      // Set up button to turn on/off all annotations
       var annot=document.getElementById('annotations');
       annot.setAttribute("state", "on");
       annot.style.backgroundColor = "green"
@@ -384,6 +380,8 @@ var success = function (api) {
           for (this_anno_ind in annotationlist) {
             api.hideAnnotation(this_anno_ind);
           }
+          api.hideAnnotationTooltips();
+          api.unselectAnnotation();
           this.setAttribute("state", "off");
           this.style.backgroundColor = "red"
 
@@ -415,10 +413,45 @@ var success = function (api) {
       
       // Reset camera to presently visible geometries
       document.getElementById('resetbutton').addEventListener('click', function () {
-        api.focusOnVisibleGeometries(function (err) {
-          if (err) return;
-        });
+        api.focusOnVisibleGeometries();
       });
+
+      // // Output camera information
+      // document.getElementById('cam').addEventListener('click', function () {
+      //   api.getCameraLookAt(function(err, camera) {
+      //     var camera_x=camera.position[0];
+      //     var camera_y=camera.position[1];
+      //     var camera_z=camera.position[2];
+      //     var target_x=camera.target[0];
+      //     var target_y=camera.target[1];
+      //     var target_z=camera.target[2];
+          
+      //     var formObject =  {
+      //         "camera_x": camera_x, 
+      //         "camera_y": camera_y, 
+      //         "camera_z": camera_z, 
+      //         "target_x": target_x, 
+      //         "target_y": target_y, 
+      //         "target_z": target_z,
+      //       }
+          
+      //       if (camera_data == "") {
+      //         camera_data = JSON.stringify(formObject); // [x, y, z]
+      //       } else {
+      //         camera_data = camera_data + JSON.stringify(formObject); // [x, y, z]
+      //       }
+      //   });
+      // });
+
+      // // Download saved camera location/orientations
+      // document.getElementById('dl').addEventListener('click', function () {
+      //   downloadJSON(camera_data, 'camera_data.json');
+      // });
+
+      // Run the control script for this model
+          document.getElementById('script').addEventListener('click', function () {
+            runScreenplay('./screenplay.json', api);
+          });
 
       // Set up popups
 
@@ -449,7 +482,9 @@ client.init(uid, {
   autostart: 1,
   preload: 1,
   autospin: 0,
-  transparent: 1
+  transparent: 1,
+  ui_controls: 0,
+  ui_watermark: 0
 });
 
 // Functions
@@ -531,3 +566,73 @@ async function getData(path) {
     console.error(error.message);
   }
 }
+
+// Function to download and run a scripted control file - a screenplay
+
+async function runScreenplay(path, api) {
+  try {
+    const response = await fetch(path + '?v=' + Date().now);
+    if (!response.ok) {
+      throw new Error(`Response status: ${response.status}`);
+    }
+
+    const json = await response.json();
+    var name;
+    var tooltip;
+    var myspan;
+    var annotationlist;
+
+    api.getAnnotationList(function (p, list) {
+      annotationlist=list;
+    });
+
+    for (this_anno_ind in annotationlist) {
+      api.hideAnnotation(this_anno_ind);
+      api.hideAnnotationTooltip(this_anno_ind);
+      api.hideAnnotationTooltips();
+      api.unselectAnnotation();
+    }
+    for (this_entry in json.screenplay) {
+      command=json.screenplay[this_entry].command;
+      console.log('running ' + command + ' - ' + json.screenplay[this_entry].argument);
+      switch (command) {
+        case 'wait':
+          await delay(json.screenplay[this_entry].argument * 1000);
+          break;
+        case 'annotation':
+          api.gotoAnnotation(json.screenplay[this_entry].argument-1);
+          // for (this_anno_ind in annotationlist) {
+          //   api.hideAnnotation(this_anno_ind);
+          //   api.hideAnnotationTooltip(this_anno_ind);
+          //   api.unselectAnnotation();
+          // }
+          break;
+        case 'easing':
+          api.setCameraEasing(json.screenplay[this_entry].argument);
+          break;
+        case 'fadeout_others':
+          var duration=json.screenplay[this_entry].argument
+          break;
+        
+      }
+      console.log('done');
+    }
+  } catch (error) {
+    console.error(error.message);
+  }
+}
+
+// function downloadJSON(data, filename) {
+
+//   const blob = new Blob([data], { type: "application/json" });
+
+//   console.log(blob)
+//   const url = URL.createObjectURL(blob);
+
+//   const link = document.createElement("a");
+//   link.href = url;
+//   link.download = filename;
+//   document.body.appendChild(link);
+//   link.click();
+//   document.body.removeChild(link);
+// }
